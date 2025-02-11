@@ -10,7 +10,7 @@ import {
   Image,
 } from "react-native";
 import { router } from "expo-router";
-import { api } from "./services/api";
+import { api } from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {

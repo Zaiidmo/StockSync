@@ -9,7 +9,7 @@ import { HapticTab } from "@/components/HapticTab";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { User } from "../types/auth";
+import { User } from "../../types/auth";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -46,7 +46,7 @@ export default function TabLayout() {
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem("user");
-      router.replace("/");
+      router.replace("/(auth)"); 
     } catch (error) {
       console.error("Logout error:", error);
     }
