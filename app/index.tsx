@@ -1,6 +1,9 @@
 import { View, Text, TextInput, TouchableOpacity, useColorScheme, Alert, Image } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
+import { api } from './services/api';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function Login() {
   const [secretKey, setSecretKey] = useState('');
@@ -11,10 +14,11 @@ export default function Login() {
   const handleLogin = async () => {
     try {
       setIsLoading(true);
-      // const user = await api.login(secretKey);
-      // // Store user data
-      // await AsyncStorage.setItem('user', JSON.stringify(user));
-      // Navigate to main app
+      // API call to verify secret key 
+      const user = await api.login(secretKey);
+      // Store user data
+      await AsyncStorage.setItem('user', JSON.stringify(user));
+      // Naigate to home page 
       router.replace('/(tabs)');
     } catch (error) {
       Alert.alert('Error', 'Invalid secret key');
