@@ -1,20 +1,46 @@
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, useColorScheme, Alert, Image } from 'react-native';
 import { router } from 'expo-router';
+import { useState } from 'react';
 
 export default function Login() {
+  const [secretKey, setSecretKey] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
+  const handleLogin = async () => {
+    try {
+      setIsLoading(true);
+      // const user = await api.login(secretKey);
+      // // Store user data
+      // await AsyncStorage.setItem('user', JSON.stringify(user));
+      // Navigate to main app
+      router.replace('/(tabs)');
+    } catch (error) {
+      Alert.alert('Error', 'Invalid secret key');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <View className="flex-1 justify-center items-center bg-blue-50 dark:bg-purple-800">
-      <Text className="text-3xl font-bold text-red-500 mb-8">StockSync</Text>
+    <View className={`flex-1 justify-center items-center ${isDark ? 'bg-gray-900' : 'bg-slate-50'}`}>
+      <Image source={require('@/assets/images/icon.png')} className='w-60 h-60'/>
       <TextInput 
-        className="w-4/5 p-4 bg-white rounded-lg mb-4"
-        placeholder="Enter PIN"
-        secureTextEntry
+        className={`w-4/5 p-4 rounded-lg mb-4 ${isDark ? 'bg-slate-800 text-white' : 'bg-white text-black'}`}
+        placeholder="Enter Secret Key"
+        value={secretKey}
+        onChangeText={setSecretKey}
+        placeholderTextColor={isDark ? '#9ca3af' : '#6b7280'}
       />
       <TouchableOpacity 
-        className="w-4/5 bg-blue-600 p-4 rounded-lg"
-        onPress={() => router.push('/(tabs)')}
+        className={`w-4/5 p-4 rounded-lg ${isLoading ? 'bg-[#1f61b7]' : 'bg-[#2563eb]'}`}
+        onPress={handleLogin}
+        disabled={isLoading}
       >
-        <Text className="text-white text-center">Login</Text>
+        <Text className="text-white text-center font-semibold">
+          {isLoading ? 'Logging in...' : 'Login'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
