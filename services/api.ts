@@ -17,10 +17,6 @@ export const api = {
     } catch (error) {
       throw error;
     }
-  },
-  fetchProducts: async (secretKey: string) => {
-    
-  },
-  
+  }  
 };
 

@@ -1,7 +1,7 @@
 // app/(tabs)/_layout.tsx
 import { router, Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Platform, TouchableOpacity } from "react-native";
+import { Platform, Text, TouchableOpacity } from "react-native";
 import { Barcode, Package, LineChart, LogOut } from "lucide-react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -60,7 +60,8 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        headerShown: true, // Changed to true to show logout button
+        headerShown: true, 
+        headerTitleAlign: "left",
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
@@ -70,12 +71,15 @@ export default function TabLayout() {
           default: {},
         }),
         headerRight: () => (
-          <TouchableOpacity onPress={handleLogout}>
+          <TouchableOpacity className="flex-row gap-4 w-36 items-center" onPress={handleLogout} >
+            <Text className="text-lg font-bold text-white ml-2">
+            {currentUser?.name}</Text>
             <LogOut
               color={Colors[colorScheme ?? "light"].text}
               size={24}
               style={{ marginRight: 16 }}
             />
+            
           </TouchableOpacity>
         ),
       }}

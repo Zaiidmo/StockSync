@@ -50,7 +50,7 @@ export default function Login() {
   return (
     <View
       className={`flex-1 justify-center items-center ${
-        isDark ? "bg-[#151718]" : "bg-slate-50"
+        isDark ? "bg-[#1f61b7]" : "bg-slate-50"
       }`}
     >
       <Image
