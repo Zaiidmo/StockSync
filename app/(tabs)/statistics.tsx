@@ -1,9 +1,9 @@
 import { View, Text } from 'react-native';
 
-export default function HomeScreen() {
+export default function StatisticsScreen() {
   return (
     <View className="flex-1 justify-center items-center">
-      <Text>Inventory Screen</Text>
+      <Text>Statistics Screen</Text>
     </View>
   );
 }
