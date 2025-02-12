@@ -37,7 +37,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#000000"
         }
-      ]
+      ],
+      "expo-barcode-scanner"
     ],
     "experiments": {
       "typedRoutes": true,
