@@ -11,33 +11,8 @@ import {
   Modal,
   ScrollView 
 } from 'react-native';
-import { Search, SlidersHorizontal, X, ArrowLeft, MapPin, Package, DollarSign, Truck } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-interface Product {
-  id: number;
-  name: string;
-  type: string;
-  barcode: string;
-  price: number;
-  solde?: number;
-  supplier: string;
-  image: string;
-  stocks: {
-    id: number;
-    name: string;
-    quantity: number;
-    localisation: {
-      city: string;
-      latitude: number;
-      longitude: number;
-    }
-  }[];
-  editedBy: {
-    warehousemanId: number;
-    at: string;
-  }[];
-}
+import { Search, SlidersHorizontal, X, ArrowLeft, MapPin, Package, DollarSign, Truck, BarChart, Barcode } from 'lucide-react-native';
+import { Product } from '@/types/product';
 
 interface FilterOptions {
   type: string[];
@@ -64,7 +39,7 @@ export default function InventoryScreen() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch('http://172.20.10.3:3000/products');
+      const response = await fetch('http://192.168.1.28:3000/products');
       const data = await response.json();
       setProducts(data);
       setFilteredProducts(data);
@@ -108,13 +83,13 @@ export default function InventoryScreen() {
       filtered = filtered.filter(product => filters.supplier.includes(product.supplier));
     }
 
-    // Apply stock status filters
-    if (filters.stockStatus.length > 0) {
-      filtered = filtered.filter(product => {
-        const status = getStockStatus(product.stocks).text;
-        return filters.stockStatus.includes(status);
-      });
-    }
+    // // Apply stock status filters
+    // if (filters.stockStatus.length > 0) {
+    //   filtered = filtered.filter(product => {
+    //     const status = getStockStatus(product.stocks).text;
+    //     return filters.stockStatus.includes(status);
+    //   });
+    // }
 
     setFilteredProducts(filtered);
   };
@@ -306,7 +281,7 @@ export default function InventoryScreen() {
                     value={selectedProduct.supplier}
                   />
                   <DetailRow 
-                    icon={<MapPin size={20} color={isDark ? '#94a3b8' : '#64748b'} />}
+                    icon={<Barcode size={20} color={isDark ? '#94a3b8' : '#64748b'} />}
                     label="Barcode"
                     value={selectedProduct.barcode}
                   />
@@ -511,7 +486,7 @@ const isDark = colorScheme === 'dark';
 
 return (
   <View className={`flex-row items-center px-3 py-1 mr-2 rounded-full ${
-    isDark ? 'bg-slate-700' : 'bg-slate-200'
+    isDark ? 'bg-green-700' : 'bg-slate-200'
   }`}>
     <Text className={`mr-2 ${isDark ? 'text-white' : 'text-black'}`}>
       {label}
