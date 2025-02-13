@@ -15,10 +15,21 @@ export interface Product {
       city: string;
       latitude: number;
       longitude: number;
-    }
+    };
   }[];
   editedBy: {
     warehousemanId: number;
     at: string;
   }[];
+}
+
+export interface Stock {
+  id: number;
+  name: string;
+  quantity: number;
+  localisation: {
+    city: string;
+    latitude: number;
+    longitude: number;
+  };
 }
