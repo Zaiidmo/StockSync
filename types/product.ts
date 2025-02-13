@@ -33,3 +33,10 @@ export interface Stock {
     longitude: number;
   };
 }
+
+export interface ProductDetailsModalProps {
+  product: Product | null;
+  visible: boolean;
+  onClose: () => void;
+  isDark: boolean;
+}
