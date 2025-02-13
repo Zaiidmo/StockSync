@@ -11,8 +11,8 @@ import {
   ActivityIndicator
 } from 'react-native';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, Package, DollarSign, Truck, Barcode, Plus } from 'lucide-react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ArrowLeft, Package, DollarSign, Truck, Barcode } from 'lucide-react-native';
+import { useRoute } from '@react-navigation/native';
 
 interface FormField {
   label: string;
@@ -30,10 +30,12 @@ const initialFormState = {
   quantity: '',
 };
 
-export default function AddProductScreen({ barcode, isDark }: { barcode: string; isDark: boolean }) {
+export default function AddProductScreen({ isDark }: { isDark: boolean }) {
   const [formData, setFormData] = useState(initialFormState);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const route = useRoute();
+  const { barcode } = route.params as { barcode: string };
+    const router = useRouter();
 
   const formFields: FormField[] = [
     {
@@ -134,7 +136,7 @@ export default function AddProductScreen({ barcode, isDark }: { barcode: string;
             <Text className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Barcode
             </Text>
-            <Text className={`text-lg font-semibold ${isDark ? 'text-white' : 'text-slate-800'}`}>
+            <Text className={`text-lg font-semibold text-black`}>
               {barcode}
             </Text>
           </View>
