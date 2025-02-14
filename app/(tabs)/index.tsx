@@ -117,11 +117,11 @@ export default function InventoryScreen() {
   };
 
   return (
-    <View className={`flex-1 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}>
+    <View className={`flex-1 ${isDark ? "bg-[#010326]" : "bg-slate-50"}`}>
       <View className="p-4">
         <View
           className={`flex-row items-center px-4 rounded-lg ${
-            isDark ? "bg-slate-800" : "bg-white"
+            isDark ? "bg-[#202020]" : "bg-white"
           }`}
         >
           <Search size={20} color={isDark ? "#94a3b8" : "#64748b"} />

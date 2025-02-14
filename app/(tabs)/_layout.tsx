@@ -10,6 +10,7 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { User } from "../../types/auth";
+import BlurTabBarBackground from "@/components/ui/TabBarBackground.ios";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -67,13 +68,18 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
+            backgroundColor: '#000000',
           },
-          default: {},
+          default: {'backgroundColor': '#000000'},
         }),
+        headerStyle: {
+          backgroundColor: "#000000",
+        },
+
         headerRight: () => (
           <TouchableOpacity className="flex-row gap-4 w-36 items-center" onPress={handleLogout} >
             <Text className="text-lg font-bold text-white ml-2">
-            {currentUser?.name}</Text>
+            {currentUser?.name.split(' ')[0]}</Text>
             <LogOut
               color={Colors[colorScheme ?? "light"].text}
               size={24}

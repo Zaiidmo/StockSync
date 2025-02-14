@@ -1,8 +1,6 @@
-// src/services/productService.ts
-
 import { Product, Stock } from "@/types/product";
 
-const BASE_URL = "http://192.168.1.28:3000";
+const BASE_URL = "http://192.168.0.33:3000";
 
 export const productService = {
   fetchProducts: async (): Promise<Product[]> => {

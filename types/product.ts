@@ -8,7 +8,6 @@ export interface Product {
   supplier: string;
   image: string;
   stocks: {
-    id: number;
     name: string;
     quantity: number;
     localisation: {
