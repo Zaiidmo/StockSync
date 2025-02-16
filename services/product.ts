@@ -1,8 +1,9 @@
 import { User } from "@/types/auth";
-import { Product, Stock } from "@/types/product";
+import { Product } from "@/types/product";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { statisticsService } from "./statistics";
 
-const BASE_URL = "http://192.168.1.28:3000";
+const BASE_URL = "http://192.168.0.33:3000";
 
 export const productService = {
   fetchProducts: async (): Promise<Product[]> => {
@@ -13,7 +14,7 @@ export const productService = {
     } catch (error) {
       console.error("Error fetching products:", error);
       throw error;
-    } 
+    }
   },
 
   getCurrentProduct: async (productId: number): Promise<Product> => {
@@ -48,11 +49,11 @@ export const productService = {
     try {
       // Create edit record
       const editRecord = await createEditRecord();
-      
+
       // Prepare product data with edit record
       const productWithEdit = {
         ...productData,
-        editedBy: [editRecord]
+        editedBy: [editRecord],
       };
 
       const response = await fetch(`${BASE_URL}/products`, {
@@ -62,77 +63,95 @@ export const productService = {
       });
 
       if (!response.ok) throw new Error("Failed to add product");
-      return response.json();
+
+      const savedProduct = await response.json();
+      await statisticsService.recalculateAllStatistics();
+      await statisticsService.updateProductMovement(savedProduct, true);
+      return savedProduct;
     } catch (error) {
       console.error("Error adding product:", error);
       throw error;
     }
   },
-  updateProduct: async (productId: number, data: Partial<Product>): Promise<Product> => {
+  updateProduct: async (
+    productId: number,
+    data: Partial<Product>
+  ): Promise<Product> => {
     try {
       // Validate required fields
       if (!data.name?.trim()) {
-        throw new Error('Product name is required');
+        throw new Error("Product name is required");
       }
 
       // Validate stocks data
       if (data.stocks) {
         data.stocks.forEach((stock) => {
           if (stock.quantity < 0) {
-            throw new Error('Stock quantity cannot be negative');
+            throw new Error("Stock quantity cannot be negative");
           }
           if (!stock.name || !stock.localisation.city) {
-            throw new Error('Stock name and city are required');
+            throw new Error("Stock name and city are required");
           }
         });
       }
 
       // Validate price is a positive number
       if (data.price !== undefined && data.price < 0) {
-        throw new Error('Price must be a positive number');
+        throw new Error("Price must be a positive number");
       }
 
       // Get current product data
-      const currentProduct: Product = await productService.getCurrentProduct(productId);
+      const currentProduct: Product = await productService.getCurrentProduct(
+        productId
+      );
 
-       // Create new edit record
-       const editRecord = await createEditRecord();
+      // Create new edit record
+      const editRecord = await createEditRecord();
 
-       // Prepare update data with new edit record
-       const updateData = {
-         ...Object.fromEntries(
-           Object.entries(data).filter(([_, value]) => value !== undefined)
-         ),
-         editedBy: [...(currentProduct.editedBy || []), editRecord]
-       };
- 
+      // Prepare update data with new edit record
+      const updateData = {
+        ...Object.fromEntries(
+          Object.entries(data).filter(([_, value]) => value !== undefined)
+        ),
+        editedBy: [...(currentProduct.editedBy || []), editRecord],
+      };
 
       const response = await fetch(`${BASE_URL}/products/${productId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updateData),
       });
-      
+
       if (!response.ok) {
-        throw new Error('No data received from server');
+        throw new Error("No data received from server");
       }
 
-      return response.json();
+      const updatedProduct = await response.json();
+      await statisticsService.recalculateAllStatistics();
+      if (data.stocks && data.stocks > currentProduct.stocks) {
+        await statisticsService.updateProductMovement(updatedProduct, true);
+      } else if (data.stocks && data.stocks < currentProduct.stocks) {
+        await statisticsService.updateProductMovement(updatedProduct, false);
+      }
+      return updatedProduct;
     } catch (error) {
-      console.error('Error updating product:', error);
+      console.error("Error updating product:", error);
       if (error instanceof Error) {
         throw new Error(`Failed to update product: ${error.message}`);
       }
-      throw new Error('Failed to update product');
+      throw new Error("Failed to update product");
     }
   },
   deleteProduct: async (productId: number): Promise<void> => {
     try {
+      const product = await productService.getCurrentProduct(productId);
       const response = await fetch(`${BASE_URL}/products/${productId}`, {
         method: "DELETE",
       });
 
       if (!response.ok) throw new Error("Failed to delete product");
+      await statisticsService.recalculateAllStatistics();
+      await statisticsService.updateProductMovement(product, false);
     } catch (error) {
       console.error("Error deleting product:", error);
       throw error;
@@ -144,7 +163,9 @@ export const productService = {
       const product: Product = await response.json();
       const warehousemen: User[] = [];
       for (let i = 0; i < product.editedBy.length; i++) {
-        const response = await fetch(`${BASE_URL}/warehousemans/${product.editedBy[i].warehousemanId}`);
+        const response = await fetch(
+          `${BASE_URL}/warehousemans/${product.editedBy[i].warehousemanId}`
+        );
         const user = await response.json();
         warehousemen.push(user);
       }
@@ -156,9 +177,9 @@ export const productService = {
   },
 };
 
-/* 
-** Helper functiions
-*/
+/*
+ ** Helper functiions
+ */
 
 // Helper function to get current user
 const getCurrentUser = async () => {
@@ -177,8 +198,6 @@ const createEditRecord = async () => {
   const user = await getCurrentUser();
   return {
     warehousemanId: user.id,
-    at: new Date()
+    at: new Date(),
   };
 };
-
-
