@@ -7,6 +7,7 @@ import {
   ScrollView, 
   Image,
   StyleSheet,
+  SafeAreaView,
 } from 'react-native';
 import { 
   DollarSign, 
@@ -39,7 +40,6 @@ const ProductDetailsModal = ({ product, visible, onClose, isDark }: ProductDetai
       </View>
     </View>
   );
-
 
   const WarehousemanCard = ({ warehousman }: { warehousman: any }) => (
     <View 
@@ -110,7 +110,7 @@ const ProductDetailsModal = ({ product, visible, onClose, isDark }: ProductDetai
       animationType="slide"
       onRequestClose={onClose}
     >
-      <View className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+      <SafeAreaView className={`flex-1 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
         {/* Header */}
         <View className={`p-4 ${isDark ? 'bg-slate-800' : 'bg-white'}`} style={styles.header}>
           <TouchableOpacity 
@@ -171,7 +171,7 @@ const ProductDetailsModal = ({ product, visible, onClose, isDark }: ProductDetai
                 Stock Information
               </Text>
               {product.stocks?.map((stock, index) => (
-                <StockCard key={stock.id || index} stock={stock} />
+                <StockCard key={index} stock={stock} />
               ))}
             </View>
             <View>
@@ -184,7 +184,7 @@ const ProductDetailsModal = ({ product, visible, onClose, isDark }: ProductDetai
             </View>
           </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     </Modal>
   );
 };
@@ -194,7 +194,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingTop: 44, // Safe area padding
   },
   stockCard: {
     elevation: 2,

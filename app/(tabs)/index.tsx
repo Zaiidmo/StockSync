@@ -7,10 +7,13 @@ import {
   TextInput,
   TouchableOpacity,
   useColorScheme,
+  Alert,
+  Pressable,
 } from "react-native";
-import { Search } from "lucide-react-native";
+import { Search, MoreVertical } from "lucide-react-native";
 import { Product } from "@/types/product";
 import ProductDetailsModal from "@/components/products/ProductDetailModal";
+import EditProductModal from "@/components/products/EditProductModal";
 import { productService } from "@/services/product";
 
 export default function InventoryScreen() {
@@ -19,6 +22,7 @@ export default function InventoryScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
@@ -42,18 +46,19 @@ export default function InventoryScreen() {
     if (!searchQuery.trim()) return products;
 
     const searchTerms = searchQuery.toLowerCase().split(" ");
-    
-    return products.filter(product => {
+
+    return products.filter((product) => {
       const searchableText = [
         product.name,
         product.type,
         product.supplier,
         product.barcode,
-        product.price.toString()
-      ].join(" ").toLowerCase();
+        product.price.toString(),
+      ]
+        .join(" ")
+        .toLowerCase();
 
-      // Match all search terms (AND logic)
-      return searchTerms.every(term => searchableText.includes(term));
+      return searchTerms.every((term) => searchableText.includes(term));
     });
   }, [products, searchQuery]);
 
@@ -68,16 +73,65 @@ export default function InventoryScreen() {
     return { color: "bg-green-500", text: "In Stock" };
   };
 
+  const handleDelete = async (productId: number) => {
+    try {
+      await productService.deleteProduct(productId);
+      setProducts((prev) => prev.filter((p) => p.id !== productId));
+    } catch (error) {
+      Alert.alert("Error", "Failed to delete product");
+    }
+  };
+
+  const handleUpdateProduct = (updatedProduct: Product) => {
+    setProducts((prev) =>
+      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
+    );
+  };
+
+  const handleLongPress = (product: Product) => {
+    Alert.alert(
+      "Product Options",
+      "Choose an action",
+      [
+        {
+          text: "Edit",
+          onPress: () => setEditingProduct(product),
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            Alert.alert(
+              "Delete Product",
+              "Are you sure you want to delete this product?",
+              [
+                { text: "Cancel", style: "cancel" },
+                {
+                  text: "Delete",
+                  style: "destructive",
+                  onPress: () => handleDelete(product.id),
+                },
+              ]
+            );
+          },
+        },
+        { text: "Cancel", style: "cancel" },
+      ]
+    );
+  };
+
   const renderProduct = ({ item }: { item: Product }) => {
     const stockStatus = getStockStatus(item.stocks);
     const totalStock = getTotalStock(item.stocks);
 
     return (
-      <TouchableOpacity
+      <Pressable
+        onLongPress={() => handleLongPress(item)}
+        onPress={() => setSelectedProduct(item)}
         className={`m-2 p-4 rounded-lg ${
           isDark ? "bg-slate-800" : "bg-white"
         } shadow-md`}
-        onPress={() => setSelectedProduct(item)}
+        android_ripple={{ color: isDark ? "#ffffff20" : "#00000020" }}
       >
         <View className="flex-row">
           <Image
@@ -85,17 +139,32 @@ export default function InventoryScreen() {
             className="w-20 h-20 rounded-md"
           />
           <View className="flex-1 ml-4">
+            <View className="flex-row justify-between items-start">
+              <Text
+                className={`font-bold text-lg flex-1 ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                {item.name}
+              </Text>
+              <TouchableOpacity
+                onPress={() => handleLongPress(item)}
+                className="p-1"
+              >
+                <MoreVertical
+                  size={20}
+                  color={isDark ? "#94a3b8" : "#64748b"}
+                />
+              </TouchableOpacity>
+            </View>
             <Text
-              className={`font-bold text-lg ${
-                isDark ? "text-white" : "text-black"
-              }`}
+              className={`${isDark ? "text-slate-300" : "text-slate-600"}`}
             >
-              {item.name}
-            </Text>
-            <Text className={`${isDark ? "text-slate-300" : "text-slate-600"}`}>
               Type: {item.type}
             </Text>
-            <Text className={`${isDark ? "text-slate-300" : "text-slate-600"}`}>
+            <Text
+              className={`${isDark ? "text-slate-300" : "text-slate-600"}`}
+            >
               Price: ${item.price}
             </Text>
             <View className="flex-row items-center mt-2">
@@ -112,7 +181,7 @@ export default function InventoryScreen() {
             </View>
           </View>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     );
   };
 
@@ -163,6 +232,13 @@ export default function InventoryScreen() {
         product={selectedProduct}
         visible={!!selectedProduct}
         onClose={() => setSelectedProduct(null)}
+        isDark={isDark}
+      />
+      <EditProductModal
+        product={editingProduct}
+        visible={!!editingProduct}
+        onClose={() => setEditingProduct(null)}
+        onUpdate={handleUpdateProduct}
         isDark={isDark}
       />
     </View>

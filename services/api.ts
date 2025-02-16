@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.0.33:3000";
+const BASE_URL = "http://192.168.1.28:3000";
 
 export const api = {
   login: async (secretKey: string) => {
@@ -17,6 +17,15 @@ export const api = {
     } catch (error) {
       throw error;
     }
-  }  
+  },
+  getUserData: async (userId: number) => {
+    try {
+      const response = await fetch(`${BASE_URL}/warehousemans/${userId}`);
+      const user = await response.json();
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
 };
 

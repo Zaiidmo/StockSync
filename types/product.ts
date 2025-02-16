@@ -39,3 +39,14 @@ export interface ProductDetailsModalProps {
   onClose: () => void;
   isDark: boolean;
 }
+
+
+export interface StockFormData {
+  name: string;
+  quantity: number;
+  localisation: {
+    city: string;
+    latitude: number;
+    longitude: number;
+  };
+}
