@@ -36,6 +36,7 @@ export default function EditProductModal({
       setFormData({
         name: product.name,
         type: product.type,
+        image: product.image,
         price: product.price,
         supplier: product.supplier,
         barcode: product.barcode,
@@ -141,7 +142,27 @@ export default function EditProductModal({
           </View>
 
           <ScrollView showsVerticalScrollIndicator={false}>
+              
+
             <View className="space-y-4">
+            <View>
+                <Text
+                  className={`text-sm mb-1 ${
+                    isDark ? 'text-slate-300' : 'text-slate-600'
+                  }`}
+                >
+                  Image
+                </Text>
+                <TextInput
+                  className={`p-3 rounded-lg ${
+                    isDark ? 'bg-slate-700 text-white' : 'bg-slate-100 text-black'
+                  }`}
+                  value={formData.image}
+                  onChangeText={(text) => setFormData({ ...formData, image: text })}
+                  placeholderTextColor={isDark ? '#94a3b8' : '#64748b'}
+                />
+              </View>
+
               <View>
                 <Text
                   className={`text-sm mb-1 ${
