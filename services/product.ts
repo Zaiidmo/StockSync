@@ -1,3 +1,4 @@
+import { User } from "@/types/auth";
 import { Product, Stock } from "@/types/product";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -137,6 +138,22 @@ export const productService = {
       throw error;
     }
   },
+  getWareHousmen: async (productId: number): Promise<User[]> => {
+    try {
+      const response = await fetch(`${BASE_URL}/products/${productId}`);
+      const product: Product = await response.json();
+      const warehousemen: User[] = [];
+      for (let i = 0; i < product.editedBy.length; i++) {
+        const response = await fetch(`${BASE_URL}/warehousemans/${product.editedBy[i].warehousemanId}`);
+        const user = await response.json();
+        warehousemen.push(user);
+      }
+      return warehousemen;
+    } catch (error) {
+      console.error("Error fetching warehousemen:", error);
+      throw error;
+    }
+  },
 };
 
 /* 
@@ -160,7 +177,7 @@ const createEditRecord = async () => {
   const user = await getCurrentUser();
   return {
     warehousemanId: user.id,
-    at: new Date().toLocaleDateString()
+    at: new Date()
   };
 };
 
