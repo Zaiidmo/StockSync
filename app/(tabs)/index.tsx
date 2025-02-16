@@ -31,6 +31,7 @@ export default function InventoryScreen() {
     stockStatus: "",
     minPrice: "",
     maxPrice: "",
+    sortBy: "",
   });
 
   const colorScheme = useColorScheme();
@@ -81,7 +82,8 @@ export default function InventoryScreen() {
   // Filter products based on search and filters
   const filteredProducts = useMemo(() => {
     let filtered = products;
-
+  
+    // Apply filters
     if (searchQuery.trim()) {
       const searchTerms = searchQuery.toLowerCase().split(" ");
       filtered = filtered.filter((product) => {
@@ -94,19 +96,19 @@ export default function InventoryScreen() {
         ]
           .join(" ")
           .toLowerCase();
-
+  
         return searchTerms.every((term) => searchableText.includes(term));
       });
     }
-
+  
     if (filters.type) {
       filtered = filtered.filter((product) => product.type === filters.type);
     }
-
+  
     if (filters.supplier) {
       filtered = filtered.filter((product) => product.supplier === filters.supplier);
     }
-
+  
     if (filters.stockStatus) {
       filtered = filtered.filter((product) => {
         const totalStock = getTotalStock(product.stocks);
@@ -115,15 +117,32 @@ export default function InventoryScreen() {
         return totalStock >= 10;
       });
     }
-
+  
     if (filters.minPrice) {
       filtered = filtered.filter((product) => product.price >= parseFloat(filters.minPrice));
     }
-
+  
     if (filters.maxPrice) {
       filtered = filtered.filter((product) => product.price <= parseFloat(filters.maxPrice));
     }
-
+  
+    // Apply sorting
+    if (filters.sortBy) {
+      switch (filters.sortBy) {
+        case "name":
+          filtered.sort((a, b) => a.name.localeCompare(b.name));
+          break;
+        case "price":
+          filtered.sort((a, b) => a.price - b.price);
+          break;
+        case "stock":
+          filtered.sort((a, b) => getTotalStock(a.stocks) - getTotalStock(b.stocks));
+          break;
+        default:
+          break;
+      }
+    }
+  
     return filtered;
   }, [products, searchQuery, filters]);
 

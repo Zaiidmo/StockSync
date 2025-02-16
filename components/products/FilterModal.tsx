@@ -10,6 +10,7 @@ interface FilterModalProps {
     stockStatus: string;
     minPrice: string;
     maxPrice: string;
+    sortBy: string; 
   };
   setFilters: React.Dispatch<
     React.SetStateAction<{
@@ -18,11 +19,12 @@ interface FilterModalProps {
       stockStatus: string;
       minPrice: string;
       maxPrice: string;
+      sortBy: string; 
     }>
   >;
   isDark: boolean;
-  productTypes: string[]; // Passed from InventoryScreen
-  suppliers: string[]; // Passed from InventoryScreen
+  productTypes: string[];
+  suppliers: string[];
 }
 
 export default function FilterModal({
@@ -155,6 +157,45 @@ export default function FilterModal({
                   onChangeText={(text) => setFilters({ ...filters, maxPrice: text })}
                   keyboardType="numeric"
                 />
+              </View>
+            </View>
+
+            {/* Sort Section */}
+            <View className="mt-4">
+              <Text className={`${isDark ? "text-slate-300" : "text-slate-600"}`}>Sort By</Text>
+              <View className="flex-row flex-wrap mt-1">
+                <TouchableOpacity
+                  className={`p-2 px-4 rounded-full mr-2 mb-2 ${
+                    filters.sortBy === "" ? (isDark ? "bg-blue-700" : "bg-blue-200") : (isDark ? "bg-slate-700" : "bg-slate-100")
+                  }`}
+                  onPress={() => setFilters({ ...filters, sortBy: "" })}
+                >
+                  <Text className={`${isDark ? "text-white" : "text-black"}`}>None</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`p-2 px-4 rounded-full mr-2 mb-2 ${
+                    filters.sortBy === "name" ? (isDark ? "bg-blue-700" : "bg-blue-200") : (isDark ? "bg-slate-700" : "bg-slate-100")
+                  }`}
+                  onPress={() => setFilters({ ...filters, sortBy: "name" })}
+                >
+                  <Text className={`${isDark ? "text-white" : "text-black"}`}>Name</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`p-2 px-4 rounded-full mr-2 mb-2 ${
+                    filters.sortBy === "price" ? (isDark ? "bg-blue-700" : "bg-blue-200") : (isDark ? "bg-slate-700" : "bg-slate-100")
+                  }`}
+                  onPress={() => setFilters({ ...filters, sortBy: "price" })}
+                >
+                  <Text className={`${isDark ? "text-white" : "text-black"}`}>Price</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`p-2 px-4 rounded-full mr-2 mb-2 ${
+                    filters.sortBy === "stock" ? (isDark ? "bg-blue-700" : "bg-blue-200") : (isDark ? "bg-slate-700" : "bg-slate-100")
+                  }`}
+                  onPress={() => setFilters({ ...filters, sortBy: "stock" })}
+                >
+                  <Text className={`${isDark ? "text-white" : "text-black"}`}>Stock</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </ScrollView>
