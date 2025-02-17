@@ -11,7 +11,7 @@ import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import { Download } from "lucide-react-native";
-import { Statistics } from "@/types/statistics";
+import { ProductStatistic, Statistics } from "@/types/statistics";
 
 interface StatisticsExportProps {
   statistics: Statistics;
@@ -37,166 +37,209 @@ export const StatisticsExport: React.FC<StatisticsExportProps> = ({
         minimumFractionDigits: 2,
       });
 
+    const createProductList = (products: ProductStatistic[], title: string) => {
+      if (products.length === 0) {
+        return `
+          <div class="card">
+            <h3 class="card-title">${title}</h3>
+            <p class="no-data">No data available</p>
+          </div>
+        `;
+      }
+
+      const productItems = products
+        .map(
+          (product) => `
+          <div class="product-item">
+            <span>${product.name}</span>
+            <span class="product-count">${product.count}x</span>
+          </div>
+        `
+        )
+        .join("");
+
+      return `
+        <div class="card">
+          <h3 class="card-title">${title}</h3>
+          <div class="product-list">
+            ${productItems}
+          </div>
+        </div>
+      `;
+    };
+
     return `
       <!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Statistics Report</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            background-color: #ffffff;
-            color: #000000;
-            padding: 20px;
-          }
-          .header {
-      width: 100%;
-      border-bottom: thick blue;
-          }
-          .logo {
-            width: 300px;
-            height: auto;
-            margin-bottom: 10px;
-            position: absolute;
-            top: 10;
-            left: 10;
-          }
-            .header-titles {
-            margin-top: 100px;
-            margin-bottom: 30px;
-            width: 100%;
-    }
-          .report-title {
-            font-size: 30px;
-            font-weight: bold;
-            color: #333333;
-            margin: 0;
-            text-align: center;
-          }
-          .report-date {
-            font-size: 14px;
-            color: #666666;
-            margin-top: 5px;
-            text-align: center;
-          }
-          .card {
-            background-color: #f9fafb;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          }
-          .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #333333;
-            margin: 0 0 10px 0;
-          }
-          .card-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #111827;
-            margin: 0;
-          }
-          .product-list {
-            margin: 20px 0;
-          }
-          .product-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #e5e7eb;
-          }
-          .product-item:last-child {
-            border-bottom: none;
-          }
-          .no-data {
-            text-align: center;
-            color: #666666;
-            font-style: italic;
-          }
-          .footer {
-            text-align: center;
-            color: #666666;
-            margin-top: 30px;
-            font-size: 12px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="header">
-          <img src="https://i.ibb.co/Tq8DrS7L/logo-bar.png" alt="Logo" class="logo" />
-        </div>
-
- <div class="header-titles">
-             <h1 class="report-title">Statistics Report</h1>
-              <p class="report-date">Generated on ${new Date().toLocaleDateString()}</p>
- </div>
-
-        <div class="card">
-          <h3 class="card-title">Total Products</h3>
-          <p class="card-value">${statistics.totalProducts}</p>
-        </div>
-
-        <div class="card">
-          <h3 class="card-title">Out of Stock</h3>
-          <p class="card-value">${statistics.outOfStock}</p>
-        </div>
-
-        <div class="card">
-          <h3 class="card-title">Total Stock Value</h3>
-          <p class="card-value">${formatCurrency(
-            statistics.totalStockValue
-          )}</p>
-        </div>
-
-        <div class="product-list">
-          <h3 class="card-title">Most Added Products</h3>
-          <div class="card">
-            ${
-              statistics.mostAddedProducts.length > 0
-                ? statistics.mostAddedProducts
-                    .map(
-                      (product) => `
-                        <div class="product-item">
-                          <span>${product.name}</span>
-                          <span>${product.count}x</span>
-                        </div>
-                      `
-                    )
-                    .join("")
-                : '<p class="no-data">No data available</p>'
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+            body {
+              font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+              padding: 20px;
+              margin: 0;
+              background: white;
+              color: #1f2937;
             }
-          </div>
-        </div>
-
-        <div class="product-list">
-          <h3 class="card-title">Most Removed Products</h3>
-          <div class="card">
-            ${
-              statistics.mostRemovedProducts.length > 0
-                ? statistics.mostRemovedProducts
-                    .map(
-                      (product) => `
-                        <div class="product-item">
-                          <span>${product.name}</span>
-                          <span>${product.count}x</span>
-                        </div>
-                      `
-                    )
-                    .join("")
-                : '<p class="no-data">No data available</p>'
+            
+            .header {
+              border-bottom: 3px solid #1E6BF1;
+              padding-bottom: 20px;
+              margin-bottom: 30px;
             }
+            
+            .logo {
+              width: 200px;
+              margin-bottom: 20px;
+              color: #1E6BF1;
+              font-size: 24px;
+              font-weight: bold;
+            }
+            
+            .report-title {
+              font-size: 24px;
+              color: #1f2937;
+              margin: 0;
+            }
+            
+            .report-subtitle {
+              color: #6b7280;
+              margin-top: 5px;
+              font-size: 14px;
+            }
+            
+            .summary {
+              background: #f3f4f6;
+              padding: 20px;
+              border-radius: 8px;
+              margin-bottom: 30px;
+            }
+            
+            .summary-title {
+              color: #1E6BF1;
+              font-size: 16px;
+              margin: 0 0 10px 0;
+            }
+            
+            .metrics-grid {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 20px;
+              margin-bottom: 30px;
+            }
+            
+            .metric-card {
+              flex: 1;
+              min-width: 200px;
+              background: white;
+              padding: 20px;
+              border-radius: 8px;
+              border: 1px solid #e5e7eb;
+            }
+            
+            .metric-value {
+              font-size: 24px;
+              font-weight: bold;
+              color: #1E6BF1;
+              margin: 0;
+            }
+            
+            .metric-label {
+              color: #6b7280;
+              font-size: 14px;
+              margin-top: 5px;
+            }
+            
+            .card {
+              background: white;
+              padding: 20px;
+              border-radius: 8px;
+              border: 1px solid #e5e7eb;
+              margin-bottom: 20px;
+            }
+            
+            .card-title {
+              color: #1f2937;
+              font-size: 16px;
+              margin: 0 0 15px 0;
+            }
+            
+            .product-list {
+              margin: 0;
+            }
+            
+            .product-item {
+              display: flex;
+              justify-content: space-between;
+              padding: 10px 0;
+              border-bottom: 1px solid #e5e7eb;
+            }
+            
+            .product-item:last-child {
+              border-bottom: none;
+            }
+            
+            .product-count {
+              color: #1E6BF1;
+              font-weight: 600;
+            }
+            
+            .no-data {
+              color: #6b7280;
+              font-style: italic;
+              text-align: center;
+              padding: 20px;
+              margin: 0;
+            }
+            
+            .footer {
+              margin-top: 40px;
+              padding-top: 20px;
+              border-top: 1px solid #e5e7eb;
+              color: #6b7280;
+              font-size: 12px;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <img class="logo" src="https://i.ibb.co/wr6LJ9Mk/App-Logos.png" alt="StockSyncLogo" border="0">
+            <h1 class="report-title">Inventory Status Report</h1>
+            <p class="report-subtitle">Generated on ${new Date().toLocaleDateString()}</p>
           </div>
-        </div>
 
-        <div class="footer">
-          <p>© 2025 StockSync. All rights reserved.</p>
-        </div>
-      </body>
+          <div class="summary">
+            <h2 class="summary-title">Executive Summary</h2>
+            <p>Current inventory status shows a total of ${statistics.totalProducts} products with a combined value of ${formatCurrency(statistics.totalStockValue)}. 
+            ${statistics.outOfStock} product${statistics.outOfStock !== 1 ? 's are' : ' is'} currently out of stock.</p>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <p class="metric-value">${statistics.totalProducts}</p>
+              <p class="metric-label">Total Products</p>
+            </div>
+            
+            <div class="metric-card">
+              <p class="metric-value">${statistics.outOfStock}</p>
+              <p class="metric-label">Out of Stock</p>
+            </div>
+            
+            <div class="metric-card">
+              <p class="metric-value">${formatCurrency(statistics.totalStockValue)}</p>
+              <p class="metric-label">Total Stock Value</p>
+            </div>
+          </div>
+
+          ${createProductList(statistics.mostAddedProducts, 'Most Added Products')}
+          ${createProductList(statistics.mostRemovedProducts, 'Most Removed Products')}
+
+          <div class="footer">
+            <p>Generated by STOCKSYNC Inventory Management System</p>
+            <p>Report ID: INV-${new Date().toISOString().split('T')[0]}</p>
+          </div>
+        </body>
       </html>
     `;
   };
