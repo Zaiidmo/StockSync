@@ -113,7 +113,7 @@ export default function InventoryScreen() {
       filtered = filtered.filter((product) => {
         const totalStock = getTotalStock(product.stocks);
         if (filters.stockStatus === "out_of_stock") return totalStock === 0;
-        if (filters.stockStatus === "low_stock") return totalStock < 10;
+        if (filters.stockStatus === "low_stock") return totalStock < 10 && totalStock > 0;
         return totalStock >= 10;
       });
     }
@@ -199,7 +199,7 @@ export default function InventoryScreen() {
       onLongPress={() => handleLongPress(item)}
       onPress={() => setSelectedProduct(item)}
       className={`m-2 p-4 rounded-lg ${
-        isDark ? "bg-slate-800" : "bg-white"
+      isDark ? "bg-[#1F2937]" : "bg-[#F5F7FA] "
       } shadow-md`}
       android_ripple={{ color: isDark ? "#ffffff20" : "#00000020" }}
     >
@@ -261,11 +261,11 @@ export default function InventoryScreen() {
 };
 
 return (
-  <View className={`flex-1 ${isDark ? "bg-[#010326]" : "bg-slate-50"}`}>
+  <View className={`flex-1 ${isDark ? "bg-[#111827]" : "bg-white"}`}>
     <View className="p-4">
       <View
         className={`flex-row items-center px-4 rounded-lg ${
-          isDark ? "bg-[#202020]" : "bg-white"
+          isDark ? "bg-black" : "bg-[#F5F7FA]"
         }`}
       >
         <Search size={20} color={isDark ? "#94a3b8" : "#64748b"} />

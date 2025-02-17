@@ -209,7 +209,7 @@ const ScannerScreen = () => {
           {/* Control buttons */}
           <View className="flex-row justify-center gap-4 px-4 mb-32">
             <TouchableOpacity
-              className="flex-1 bg-blue-500 p-4 rounded-xl items-center flex-row justify-center space-x-2"
+              className={`flex-1 ${isDark ? "bg-[#1f61b7]/80" : "bg-blue-600"} p-4 rounded-xl items-center flex-row justify-center space-x-2`}
               onPress={() => setIsScanning(true)}
             >
               <Camera size={20} color="white" />
@@ -217,7 +217,7 @@ const ScannerScreen = () => {
             </TouchableOpacity>
 
             <TouchableOpacity
-              className="flex-1 bg-blue-500 p-4 rounded-xl items-center flex-row justify-center space-x-2"
+              className={`flex-1 ${isDark ? "bg-[#1f61b7]/80" : "bg-blue-600"} p-4 rounded-xl items-center flex-row justify-center space-x-2`}
               onPress={() => setShowManualInput(!showManualInput)}
             >
               <X size={20} color="white" />
@@ -239,14 +239,12 @@ const ScannerScreen = () => {
       {showManualInput && (
         <View
           className={`absolute h-full left-0 right-0 ${
-            isDark ? "bg-black/90 backdrop-blur-xl " : "bg-white"
-          } p-4 rounded-t-3xl flex items-center justify-center`}
+            isDark ? "bg-[#111827]" : "bg-[#F5F7FA]"
+          } p-4 flex items-center justify-center`}
         >
           <TextInput
-            className={`border-2 ${
-              isDark
-                ? "border-gray-600 text-white"
-                : "border-gray-300 text-black"
+            className={`shadow-xl ${
+              isDark ? "bg-[#1F2937] text-white" : "bg-white border-1 text-black"
             } rounded-xl p-4 mb-4 w-full`}
             placeholder="Enter barcode number"
             placeholderTextColor={isDark ? "#94a3b8" : "#64748b"}
@@ -257,13 +255,13 @@ const ScannerScreen = () => {
           />
           <View className="flex-row gap-4">
             <TouchableOpacity
-              className="bg-red-500 p-4 rounded-xl items-center"
+              className="bg-red-500/80 p-4 rounded-xl items-center"
               onPress={() => setShowManualInput(false)}
             >
               <Text className="text-white font-bold">Cancel</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              className="bg-blue-500 p-4 rounded-xl items-center"
+              className={`${isDark ? "bg-[#1f61b7]/80" : "bg-[#3b82f6]/80" } p-4 rounded-xl items-center`}
               onPress={handleManualSubmit}
             >
               <Text className="text-white font-bold">Submit</Text>

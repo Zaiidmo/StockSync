@@ -12,6 +12,7 @@ import {
   useColorScheme,
   Image,
   SafeAreaView,
+  SafeAreaViewBase,
 } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -91,8 +92,8 @@ const FormField = React.memo(
         {field.label} {field.required && "*"}
       </Text>
       <View
-        className={`flex-row items-center border rounded-xl p-2 ${
-          isDark ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"
+        className={`flex-row items-center rounded-xl p-2 ${
+          isDark ? "bg-[#1F2937]" : "bg-[#F5F7FA] "
         }`}
       >
         <View className="p-2">{field.icon}</View>
@@ -316,79 +317,81 @@ export default function AddProductScreen() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      className={`flex-1 ${isDark ? "bg-slate-900" : "bg-slate-50"}`}
-    >
-      {/* Header */}
-      <SafeAreaView
-        className={`p-4 ${isDark ? "bg-slate-800" : "bg-white"} shadow-sm`}
+    <SafeAreaView className="flex-1" >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        className={`flex-1 ${isDark ? "bg-[#111827]" : "bg-white"}`}
       >
-        <View className="flex-row items-center justify-between">
-          <TouchableOpacity
-            onPress={() => router.back()}
-            className="w-10 h-10 items-center justify-center"
-          >
-            <ArrowLeft size={24} color={isDark ? "#fff" : "#000"} />
-          </TouchableOpacity>
-          <Text
-            className={`text-xl font-bold ${
-              isDark ? "text-white" : "text-black"
-            }`}
-          >
-            Add New Product
-          </Text>
-          <View style={{ width: 40 }} />
-        </View>
-      </SafeAreaView>
-
-      <ScrollView className="flex-1 p-4">
-        {/* Barcode Display */}
+        {/* Header */}
         <View
-          className={`flex-row items-center p-4 mb-6 rounded-xl ${
-            isDark ? "bg-slate-800" : "bg-white"
-          } shadow-sm`}
+          className={`p-4 ${isDark ? "bg-black" : "bg-white"} shadow-sm`}
         >
-          <Barcode size={24} color={isDark ? "#94a3b8" : "#3b82f6"} />
-          <View className="ml-3">
-            <Text
-              className={`text-xs ${
-                isDark ? "text-slate-400" : "text-slate-500"
-              }`}
+          <View className="flex-row items-center justify-between">
+            <TouchableOpacity
+              onPress={() => router.back()}
+              className="w-10 h-10 items-center justify-center"
             >
-              Barcode
-            </Text>
+              <ArrowLeft size={24} color={isDark ? "#fff" : "#000"} />
+            </TouchableOpacity>
             <Text
-              className={`text-lg font-semibold ${
+              className={`text-xl font-bold ${
                 isDark ? "text-white" : "text-black"
               }`}
             >
-              {barcode}
+              Add New Product
             </Text>
+            <View style={{ width: 40 }} />
           </View>
         </View>
-
-        {/* Form Sections */}
-        {renderSection("Product Information")}
-        {renderSection("Stock Information")}
-
-        {/* Submit Button */}
-        <TouchableOpacity
-          onPress={handleSubmit}
-          disabled={isLoading}
-          className={`mt-4 mb-8 p-4 rounded-xl ${
-            isLoading ? "bg-blue-300" : "bg-blue-500"
-          }`}
-        >
-          {isLoading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text className="text-white text-center font-bold text-lg">
-              Add Product
-            </Text>
-          )}
-        </TouchableOpacity>
-      </ScrollView>
-    </KeyboardAvoidingView>
+  
+        <ScrollView className="flex-1 p-4">
+          {/* Barcode Display */}
+          <View
+            className={`flex-row items-center p-4 mb-6 rounded-xl ${
+              isDark ? "bg-[#1F2937]" : "bg-[#F5F7FA] "
+            } shadow-sm`}
+          >
+            <Barcode size={24} color={isDark ? "#94a3b8" : "#3b82f6"} />
+            <View className="ml-3">
+              <Text
+                className={`text-xs ${
+                  isDark ? "text-slate-400" : "text-slate-500"
+                }`}
+              >
+                Barcode
+              </Text>
+              <Text
+                className={`text-lg font-semibold ${
+                  isDark ? "text-white" : "text-black"
+                }`}
+              >
+                {barcode}
+              </Text>
+            </View>
+          </View>
+  
+          {/* Form Sections */}
+          {renderSection("Product Information")}
+          {renderSection("Stock Information")}
+  
+          {/* Submit Button */}
+          <TouchableOpacity
+            onPress={handleSubmit}
+            disabled={isLoading}
+            className={`mt-4 mb-8 p-4 rounded-xl ${
+              isLoading ? "bg-[#1f61b7]" : "bg-[#1f61b7]/80"
+            }`}
+          >
+            {isLoading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text className="text-white text-center font-bold text-lg">
+                Add Product
+              </Text>
+            )}
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }

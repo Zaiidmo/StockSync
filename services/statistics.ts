@@ -2,7 +2,7 @@ import { Product } from "@/types/product";
 import { Statistics } from "@/types/statistics";
 
 
-const BASE_URL = "http://192.168.0.33:3000";
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
 export const statisticsService = {
     getStatistics: async () => {

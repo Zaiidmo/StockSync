@@ -42,7 +42,7 @@ const ProductDetailsModal = ({
         const warehousemenData = await productService.getWareHousmen(
           product.id
         );
-        console.log("Fetched warehousmen:", warehousemenData);
+        // console.log("Fetched warehousmen:", warehousemenData);
         setWarehousmen(warehousemenData);
       } catch (error) {
         console.error("Error fetching warehousemen:", error);

@@ -50,7 +50,7 @@ export default function Login() {
   return (
     <View
       className={`flex-1 justify-center items-center ${
-        isDark ? "bg-[#1f61b7]" : "bg-slate-50"
+        isDark ? "bg-[#111827]" : "bg-white"
       }`}
     >
       <Image
@@ -59,7 +59,7 @@ export default function Login() {
       />
       <TextInput
         className={`w-4/5 p-4 rounded-lg mb-4 ${
-          isDark ? "bg-slate-800 text-white" : "bg-white text-black"
+          isDark ? "bg-[#1F2937] text-white" : "bg-[#F5F7FA] text-black"
         }`}
         placeholder="Enter Secret Key"
         value={secretKey}
@@ -68,7 +68,7 @@ export default function Login() {
       />
       <TouchableOpacity
         className={`w-4/5 p-4 rounded-lg ${
-          isLoading ? "bg-[#1f61b7]" : "bg-[#2563eb]"
+          isLoading ? "bg-[#1f61b7]" : "bg-[#1f61b7]/80"
         }`}
         onPress={handleLogin}
         disabled={isLoading}

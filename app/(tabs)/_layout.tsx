@@ -1,4 +1,3 @@
-// app/(tabs)/_layout.tsx
 import { router, Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Platform, Text, TouchableOpacity } from "react-native";
@@ -10,10 +9,10 @@ import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { User } from "../../types/auth";
-import BlurTabBarBackground from "@/components/ui/TabBarBackground.ios";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
   const [isLoading, setIsLoading] = useState(true); // Start with true
   const [currentUser, setCurrentUser] = useState<User | null>(null); // Renamed from User to currentUser
 
@@ -68,12 +67,12 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
-            backgroundColor: '#000000',
           },
-          default: {'backgroundColor': '#000000'},
+          default: {'backgroundColor': `${isDark ? '#000000' : '#F5F7FA'}`},
         }),
         headerStyle: {
-          backgroundColor: "#000000",
+          backgroundColor: `${isDark ? '#000000' : '#F5F7FA'}`,
+          
         },
 
         headerRight: () => (
@@ -81,7 +80,7 @@ export default function TabLayout() {
             <Text className="text-lg font-bold text-white ml-2">
             {currentUser?.name.split(' ')[0]}</Text>
             <LogOut
-              color={Colors[colorScheme ?? "light"].text}
+              color={isDark ? "#ffffff" : "#64748b"}
               size={24}
               style={{ marginRight: 16 }}
             />

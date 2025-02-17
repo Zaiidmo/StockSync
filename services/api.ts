@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.0.33:3000";
+const BASE_URL = process.env.EXPO_PUBLIC_BASE_URL;
 
 export const api = {
   login: async (secretKey: string) => {
