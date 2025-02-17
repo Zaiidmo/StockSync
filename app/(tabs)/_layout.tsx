@@ -67,6 +67,7 @@ export default function TabLayout() {
         tabBarStyle: Platform.select({
           ios: {
             position: "absolute",
+            backgroundColor: `${isDark ? '#000000' : '#F5F7FA'}`
           },
           default: {'backgroundColor': `${isDark ? '#000000' : '#F5F7FA'}`},
         }),
