@@ -23,7 +23,6 @@ import ProductDetailsModal from "@/components/products/ProductDetailModal";
 
 export const screenOptions = {
   headerShown: true,
-  title: "Scan Barcode",
   headerBackVisible: false,
 };
 

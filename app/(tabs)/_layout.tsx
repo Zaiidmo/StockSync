@@ -13,8 +13,8 @@ import { User } from "../../types/auth";
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
-  const [isLoading, setIsLoading] = useState(true); // Start with true
-  const [currentUser, setCurrentUser] = useState<User | null>(null); // Renamed from User to currentUser
+  const [isLoading, setIsLoading] = useState(true); 
+  const [currentUser, setCurrentUser] = useState<User | null>(null); 
 
   useEffect(() => {
     checkAuth();
@@ -25,7 +25,7 @@ export default function TabLayout() {
       const userData = await AsyncStorage.getItem("user");
       if (!userData) {
         router.replace("/");
-        return; // Added return to prevent parsing null
+        return; 
       }
 
       try {
@@ -53,7 +53,11 @@ export default function TabLayout() {
   };
 
   if (isLoading) {
-    return null;
+    return (
+      <Text className="flex-1 justify-center items-center text-center">
+        Loading...
+      </Text>
+    );
   }
 
   return (

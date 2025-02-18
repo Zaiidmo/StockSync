@@ -273,7 +273,6 @@ export const StatisticsExport: React.FC<StatisticsExportProps> = ({
       if (Platform.OS === "ios") {
         await Sharing.shareAsync(newUri);
       } else {
-        // For Android, we can use the native sharing
         if (await Sharing.isAvailableAsync()) {
           await Sharing.shareAsync(newUri, {
             mimeType: "application/pdf",
